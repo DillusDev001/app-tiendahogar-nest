@@ -1,0 +1,33 @@
+CREATE TABLE tipo_cambio (
+    moneda VARCHAR(500) PRIMARY KEY,
+    compra DECIMAL(10, 2) NOT NULL,
+    venta DECIMAL(10, 2) NOT NULL,
+    fec_mod TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    user_mod VARCHAR(500) NOT NULL,
+    estado INT DEFAULT 1
+);
+
+CREATE TABLE paquete (
+    id_paquete INT PRIMARY KEY AUTO_INCREMENT,
+    paquete VARCHAR(500) NOT NULL,
+    descripcion VARCHAR(500) NOT NULL,
+    tipo_contrato VARCHAR(500) NOT NULL,
+    monto_min DECIMAL(10, 2) NOT NULL,
+    monto_max DECIMAL(10, 2) NOT NULL,
+    interes DECIMAL(10, 2) NOT NULL,
+    plazo VARCHAR(500) NOT NULL,
+    moneda VARCHAR(500) NOT NULL,
+    fec_mod TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    user_mod VARCHAR(500) NOT NULL,
+    estado INT DEFAULT 1
+);
+
+CREATE TABLE comision(
+    id_comision INT PRIMARY KEY AUTO_INCREMENT,
+    antiguedad INT NOT NULL,
+    min_anios INT NOT NULL,
+    max_anios INT NOT NULL,
+    comision DECIMAL(10, 2) NOT NULL,
+    fec_mod TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    user_mod VARCHAR(500) NOT NULL
+);

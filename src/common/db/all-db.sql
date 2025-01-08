@@ -1,0 +1,211 @@
+CREATE TABLE tipo_cambio (
+    moneda VARCHAR(500) PRIMARY KEY,
+    compra DECIMAL(10, 2) NOT NULL,
+    venta DECIMAL(10, 2) NOT NULL,
+    fec_mod TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    user_mod VARCHAR(500) NOT NULL,
+    estado INT DEFAULT 1
+);
+
+CREATE TABLE paquete (
+    id_paquete INT PRIMARY KEY AUTO_INCREMENT,
+    paquete VARCHAR(500) NOT NULL,
+    descripcion VARCHAR(500) NOT NULL,
+    tipo_contrato VARCHAR(500) NOT NULL,
+    monto_min DECIMAL(10, 2) NOT NULL,
+    monto_max DECIMAL(10, 2) NOT NULL,
+    interes DECIMAL(10, 2) NOT NULL,
+    plazo VARCHAR(500) NOT NULL,
+    moneda VARCHAR(500) NOT NULL,
+    fec_mod TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    user_mod VARCHAR(500) NOT NULL,
+    estado INT DEFAULT 1
+);
+
+CREATE TABLE comision(
+    id_comision INT PRIMARY KEY AUTO_INCREMENT,
+    antiguedad INT NOT NULL,
+    min_anios INT NOT NULL,
+    max_anios INT NOT NULL,
+    comision DECIMAL(10, 2) NOT NULL,
+    fec_mod TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    user_mod VARCHAR(500) NOT NULL
+);
+
+CREATE TABLE persona (
+    ci VARCHAR(500) PRIMARY KEY NOT NULL,
+    exp VARCHAR(500) NOT NULL,
+    nombres VARCHAR(500) NOT NULL,
+    apellidos VARCHAR(500) NOT NULL,
+    code VARCHAR(500) NOT NULL,
+    celular VARCHAR(500) NOT NULL,
+    nacionalidad VARCHAR(500) NOT NULL,
+    fec_nac VARCHAR(500) NOT NULL,
+    direccion VARCHAR(500) NOT NULL,
+    descripcion VARCHAR(500) DEFAULT '',
+    fec_mod TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    user_mod VARCHAR(500) NOT NULL
+);
+
+CREATE TABLE cuenta_bancaria (
+    ci VARCHAR(500) PRIMARY KEY NOT NULL,
+    banco VARCHAR(500) NOT NULL,
+    nro_cuenta VARCHAR(500) NOT NULL,
+    moneda VARCHAR(500) NOT NULL,
+    tipo_cuenta VARCHAR(500) NOT NULL,
+    fec_mod TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    user_mod VARCHAR(500) NOT NULL,
+    FOREIGN KEY (ci) REFERENCES persona(ci) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE beneficiario (
+    ci VARCHAR(500) PRIMARY KEY NOT NULL,
+    nombre_beneficiario VARCHAR(500) NOT NULL,
+    celular_beneficiario VARCHAR(500) NOT NULL,
+    ci_beneficiario VARCHAR(500) NOT NULL,
+    fec_mod TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    user_mod VARCHAR(500) NOT NULL,
+    FOREIGN KEY (ci) REFERENCES persona(ci) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE rol (
+    rol VARCHAR(500) PRIMARY KEY NOT NULL,
+    autorizacion INT NOT NULL
+);
+
+CREATE TABLE usuario (
+    ci VARCHAR(500) PRIMARY KEY NOT NULL,
+    usuario VARCHAR(500) NOT NULL UNIQUE,
+    rol VARCHAR(500) NOT NULL,
+    autorizacion INT NOT NULL,
+    fec_mod TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    user_mod VARCHAR(500) NOT NULL,
+    estado INT DEFAULT 1,
+    FOREIGN KEY (ci) REFERENCES persona(ci) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE auth (
+    usuario VARCHAR(500) PRIMARY KEY NOT NULL,
+    password VARCHAR(500) NOT NULL,
+    pregunta VARCHAR(500) NOT NULL,
+    respuesta VARCHAR(500) NOT NULL,
+    fec_mod TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    user_mod VARCHAR(500) NOT NULL,
+    FOREIGN KEY (usuario) REFERENCES usuario(usuario) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE contrato (
+    cod_contrato VARCHAR(100) PRIMARY KEY NOT NULL,
+    anio INT NOT NULL,
+    sec INT NOT NULL,
+    fec_crea VARCHAR(500) NOT NULL,
+    id_paquete INT NOT NULL,
+    monto_capital DECIMAL(10, 2) NOT NULL,
+    tipo_contrato VARCHAR(500) NOT NULL,
+    grupal_individual VARCHAR(500) NOT NULL,
+    nombre_grupo VARCHAR(500) NOT NULL,
+    reinversion VARCHAR(500) NOT NULL,
+    cod_contrato_anterior VARCHAR(500) NOT NULL,
+    periodo_devolucion VARCHAR(500) NOT NULL,
+    ci_asesor VARCHAR(500) NOT NULL,
+    fec_mod TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    user_mod VARCHAR(500) NOT NULL,
+    estado INT DEFAULT 1,
+    FOREIGN KEY (id_paquete) REFERENCES paquete(id_paquete) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE contrato_grupo (
+    cod_contrato VARCHAR(100) NOT NULL,
+    ci VARCHAR(500) NOT NULL,
+    sec INT NOT NULL,
+    rol VARCHAR(500) NOT NULL,
+    fec_mod TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    user_mod VARCHAR(500) NOT NULL,
+    estado INT DEFAULT 1,
+    PRIMARY KEY (cod_contrato, ci, sec),
+    FOREIGN KEY (cod_contrato) REFERENCES contrato(cod_contrato) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (ci) REFERENCES persona(ci) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE contrato_deposito (
+    cod_contrato VARCHAR(100) NOT NULL,
+    sec INT NOT NULL,
+    monto DECIMAL(10, 2) NOT NULL,
+    ci_depositante VARCHAR(500) NOT NULL,
+    fec_deposito VARCHAR(500) NOT NULL,
+    tipo_deposito VARCHAR(500) NOT NULL,
+    descripcion VARCHAR(500) DEFAULT '',
+    fec_mod TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    user_mod VARCHAR(500) NOT NULL,
+    estado INT DEFAULT 1,
+    PRIMARY KEY (cod_contrato, sec),
+    FOREIGN KEY (cod_contrato) REFERENCES contrato(cod_contrato) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE contrato_plan_devolucion (
+    cod_contrato VARCHAR(100) NOT NULL,
+    sec INT NOT NULL,
+    monto DECIMAL(10, 2) NOT NULL,
+    fec_devolucion VARCHAR(500) NOT NULL,
+    razon_devolucion VARCHAR(500) NOT NULL,
+    tipo_devolucion VARCHAR(500) NOT NULL,
+    ci_devolucion VARCHAR(500) NOT NULL,
+    fec_mod TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    user_mod VARCHAR(500) NOT NULL,
+    estado INT DEFAULT 1,
+    PRIMARY KEY (cod_contrato, sec),
+    FOREIGN KEY (cod_contrato) REFERENCES contrato(cod_contrato) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE asesor (
+    ci VARCHAR(500) PRIMARY KEY NOT NULL,
+    fec_ingreso VARCHAR(500) NOT NULL,
+    antiguedad INT NOT NULL,
+    fec_mod TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    user_mod VARCHAR(500) NOT NULL,
+    estado INT DEFAULT 1,
+    FOREIGN KEY (ci) REFERENCES persona(ci) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE comision_pago (
+    cod_contrato VARCHAR(100) NOT NULL,
+    ci_asesor VARCHAR(500) NOT NULL,
+    monto DECIMAL(10, 2) NOT NULL,
+    moneda VARCHAR(500) NOT NULL,
+    fec_pago VARCHAR(500) NOT NULL,
+    tipo_pago VARCHAR(500) NOT NULL,
+    fec_mod TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    user_mod VARCHAR(500) NOT NULL,
+    estado INT DEFAULT 1,
+    PRIMARY KEY (cod_contrato, ci_asesor),
+    FOREIGN KEY (cod_contrato) REFERENCES contrato(cod_contrato) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (ci_asesor) REFERENCES persona(ci) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE depositante (
+    ci VARCHAR(500) PRIMARY KEY NOT NULL,
+    ocupacion VARCHAR(500) NOT NULL,
+    sector VARCHAR(500) NOT NULL,
+    nota VARCHAR(500) NOT NULL,
+    fec_mod TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    user_mod VARCHAR(500) NOT NULL,
+    estado INT DEFAULT 1,
+    FOREIGN KEY (ci) REFERENCES persona(ci) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE contacto (
+    ci VARCHAR(500) PRIMARY KEY NOT NULL,
+    nombre_contacto VARCHAR(500) NOT NULL,
+    celular_contacto VARCHAR(500) NOT NULL,
+    fec_mod TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    user_mod VARCHAR(500) NOT NULL,
+    FOREIGN KEY (ci) REFERENCES persona(ci) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE riesgo (
+    ocupacion VARCHAR(100) NOT NULL,
+    sector VARCHAR(100) NOT NULL,
+    ingreso DECIMAL(10, 2) NOT NULL,
+    umbral DECIMAL(10, 2) NOT NULL,
+    PRIMARY KEY (ocupacion, sector)
+);

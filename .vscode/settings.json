@@ -1,0 +1,23 @@
+{
+    "workbench.colorCustomizations": {
+        "activityBar.activeBackground": "#ff8ee1",
+        "activityBar.background": "#ff8ee1",
+        "activityBar.foreground": "#15202b",
+        "activityBar.inactiveForeground": "#15202b99",
+        "activityBarBadge.background": "#5e8000",
+        "activityBarBadge.foreground": "#e7e7e7",
+        "commandCenter.border": "#15202b99",
+        "sash.hoverBorder": "#ff8ee1",
+        "statusBar.background": "#ff5bd4",
+        "statusBar.foreground": "#15202b",
+        "statusBarItem.hoverBackground": "#ff28c7",
+        "statusBarItem.remoteBackground": "#ff5bd4",
+        "statusBarItem.remoteForeground": "#15202b",
+        "titleBar.activeBackground": "#ff5bd4",
+        "titleBar.activeForeground": "#15202b",
+        "titleBar.inactiveBackground": "#ff5bd499",
+        "titleBar.inactiveForeground": "#15202b99"
+    },
+    "peacock.color": "#ff5bd4",
+    "editor.detectIndentation": true
+}
