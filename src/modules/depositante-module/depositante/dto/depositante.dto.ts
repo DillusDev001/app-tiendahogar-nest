@@ -16,7 +16,6 @@ export class DepositanteDto {
     sector: string;
 
     @ApiProperty()
-    @IsNotEmpty()
     nota: string;
 
     @ApiProperty()

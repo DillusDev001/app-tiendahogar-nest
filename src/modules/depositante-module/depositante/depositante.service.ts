@@ -44,11 +44,11 @@ export class DepositanteService {
 
     if (!busquedaDepositante) {
       const object = this.depositanteRepository.create(depositanteDto);
-        await this.depositanteRepository.save(object);
+      await this.depositanteRepository.save(object);
 
-        serviceResult.boolean = true;
-        serviceResult.message = 'Depositante se ha agregado correctamente.';
-        serviceResult.number = 1;
+      serviceResult.boolean = true;
+      serviceResult.message = 'Depositante se ha agregado correctamente.';
+      serviceResult.number = 1;
     } else {
       serviceResult.message = 'Ya existe un depositante con el ci: ' + ci + '.';
     }
@@ -112,6 +112,33 @@ export class DepositanteService {
     let serviceResult = { boolean: false, message: '', number: 0, object: null, data: null } as ServiceResult;
 
     const result = await this.depositanteRepository
+      .createQueryBuilder('d')
+      .innerJoin('persona', 'p', 'd.ci = p.ci')
+      .where(`p.${attribute} LIKE :value`, { value: `%${value}%` }) // Filtra dinámicamente
+      .orderBy(`p.${attribute}`, orderBy) // Ordena dinámicamente
+      .getMany();
+
+    const count = result.length;
+
+    if (count > 0) {
+      const updatedResult = await Promise.all(
+        result.map(async (item) => {
+          const resultDepositante = await this.personaService.findOne(item.ci);
+          item['persona'] = resultDepositante.boolean ? resultDepositante.object : null;
+          return item; // Devuelve el item actualizado
+        })
+      );
+
+      serviceResult.data = updatedResult;
+    }
+
+    serviceResult.boolean = count > 0;
+    serviceResult.message = `${count} Depositante(s) encontrado(s).`;
+    serviceResult.number = count;
+
+    return serviceResult;
+
+    /*const result = await this.depositanteRepository
       .createQueryBuilder()
       .orderBy(attribute, orderBy)
       .where(attribute + ' like :value', { value: '%' + value + '%' })
@@ -125,7 +152,7 @@ export class DepositanteService {
     serviceResult.number = count;
     serviceResult.data = result;
 
-    return serviceResult;
+    return serviceResult;*/
   }
 
   async update(ci: string, updateDepositanteDto: UpdateDepositanteDto): Promise<ServiceResult> {

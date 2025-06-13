@@ -25,7 +25,7 @@ export class Paquete {
     interes: number;
 
     @Column()
-    plazo: string;
+    plazo: number;
 
     @Column()
     moneda: string;

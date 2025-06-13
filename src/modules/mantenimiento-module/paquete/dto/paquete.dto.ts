@@ -32,7 +32,7 @@ export class PaqueteDto {
 
     @ApiProperty()
     @IsNotEmpty()
-    plazo: string;
+    plazo: number;
 
     @ApiProperty()
     @IsNotEmpty()

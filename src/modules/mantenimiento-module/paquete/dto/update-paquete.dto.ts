@@ -10,7 +10,7 @@ export class UpdatePaqueteDto extends PartialType(PaqueteDto) {
     monto_min: number;
     monto_max: number;
     interes: number;
-    plazo: string;
+    plazo: number;
     moneda: string;
     fec_mod: string;
     user_mod: string;

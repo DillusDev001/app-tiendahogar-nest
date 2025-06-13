@@ -116,7 +116,7 @@ export class AuthService {
       const comparePregunta = await this.hashService.compareTexts(updateAuthDto.pregunta, resultUsuario.pregunta);
       const compareRespuesta = await this.hashService.compareTexts(updateAuthDto.respuesta, resultUsuario.respuesta);
 
-      if (compareRespuesta && compareRespuesta) {
+      if (comparePregunta && compareRespuesta) {
         updateAuthDto.password = await this.hashService.hashText(updateAuthDto.password);
 
         const result = await this.authRepository.update(usuario, { password: updateAuthDto.password });
